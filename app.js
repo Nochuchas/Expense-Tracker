@@ -1,21 +1,21 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const creds = require('./credentials')
 
 const port = 3000
 const app = express()
-const dbURL = 'mongodb+srv://nochuchas:<password>@cluster0.kigbf.mongodb.net/<dbname>?retryWrites=true&w=majority'
+const dbURL = `mongodb+srv://${creds.username}:${creds.password}@${creds.cluster}.kigbf.mongodb.net/${creds.db}?retryWrites=true&w=majority`
 
-// configure dbURL accrodingly first
-// mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then(res => {
-//         console.log('MongoDB connected')
-//         app.listen(port)
-//     })
-//     .catch(err => console.log(err))
+// configure dbURL accordingly first
+mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('MongoDB connected')
+        app.listen(port)
+    })
+    .catch(err => console.log(err))
 
-app.listen(port)
 
-app.get('/', (request, response) => {
-    console.log(request.url, request.method)
-    response.send('Hello world')
+app.get('/', (req, res) => {
+    console.log(req.url, req.method)
+    res.send('Hello world')
 })
