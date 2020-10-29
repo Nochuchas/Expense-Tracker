@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const creds = require('./credentials')
+const models = require('./models/models')
 
 const port = 3000
 const app = express()
@@ -16,6 +17,19 @@ mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
 
 
 app.get('/', (req, res) => {
-    console.log(req.url, req.method)
-    res.send('Hello world')
+    const newUser = new models.UserModel()
+    newUser.name = "SS"
+    newUser.save().then(() => {
+        const newUser1 = new models.UserModel()
+        newUser1.name = "YS"
+        newUser1.save().then(() => {
+            const t1 = new models.TransactionModel()
+            t1.from_user = newUser
+            t1.to_user = newUser1
+            t1.amount = 1000
+            t1.save().then(() => {
+                res.send(t1.to_user.name)
+            })
+        })
+    })
 })
